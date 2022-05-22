@@ -31,12 +31,13 @@ def get_falloff(core: int) -> array:
 
 
 def get_values(shape: tuple, seed: list = None, core: int = 54) -> tuple:
-    s = [randint(1, 10000) for _ in range(3)] if seed is None else seed
-    l, p, t = [get_noise(shape=shape, seed=s[0]) for i in range(3)]
+    n = range(4)
+    s = [randint(1, 10000) for _ in n] if seed is None else seed
+    l, o, p, t = [get_noise(shape=shape, seed=s[0]) for i in n]
     fo = get_falloff(core=core)
 
     l = l - fo
     l[l < 0] = "nan"
-    l = 0.5*(l + 1)
+    l, o = [0.5*(x + 1) for x in [l, o]]
 
-    return l, p, t
+    return l, o, p, t
