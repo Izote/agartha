@@ -15,7 +15,6 @@ def assign_tiles(noise: array) -> array:
             if isnan(value):
                 biomes[i, j] = tile(" ", (50, 50, 90), (0, 100, 180))
             else:
-                v = (0.5 * (value + 1)) * 255
-                biomes[i, j] = tile(" ", (20, 60, 20), (0, v, 0))
+                biomes[i, j] = tile(" ", (20, 60, 20), (0, 255*value, 0))
 
     return biomes

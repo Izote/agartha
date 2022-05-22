@@ -19,23 +19,24 @@ def get_noise(shape: tuple, seed: list) -> list:
         seed=seed
     )
 
-    return noise[grid(shape=shape, scale=0.1, origin=(0, 0))]
+    return noise[grid(shape=shape, scale=0.06, origin=(0, 0))]
 
 
 def get_falloff(core: int) -> array:
-    npad = int(core / 2)
+    npad = int(core / 4)
     ctr_shape, pad_shape = (core, core), (npad, npad)
     center = zeros(shape=ctr_shape)
 
     return pad(center, pad_shape, "linear_ramp", end_values=(1.30, 1.50))
 
 
-def get_values(shape: tuple, seed: list = None, core: int = 40) -> tuple:
+def get_values(shape: tuple, seed: list = None, core: int = 54) -> tuple:
     s = [randint(1, 10000) for _ in range(3)] if seed is None else seed
     l, p, t = [get_noise(shape=shape, seed=s[0]) for i in range(3)]
     fo = get_falloff(core=core)
 
     l = l - fo
     l[l < 0] = "nan"
+    l = 0.5*(l + 1)
 
     return l, p, t
