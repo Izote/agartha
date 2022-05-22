@@ -6,20 +6,25 @@ from tcod.tileset import load_tilesheet, CHARMAP_CP437
 from data import TILE_SHEET, WINDOW
 
 if TYPE_CHECKING:
+    from typing import Any
     from tcod.context import Context
 
 
 def handle_events(context: Context) -> None:
     for e in event.wait():
         context.convert_event(e)
+        print(e)
         match e:
             case event.Quit():
                 raise SystemExit()
 
 
-def render_content(context: Context) -> None:
+def render_content(*entities: Any, context: Context) -> None:
     console = context.new_console()
-    console.print(0, 0, "This is what text in your game will end up looking like. - MIKE")
+
+    for entity in entities:
+        entity.render(console)
+
     context.present(console, integer_scaling=True)
 
 
