@@ -13,9 +13,10 @@ class World:
     __SHAPE = (80, 80)
 
     def __init__(self, seed: list = None) -> None:
-        self.__land, self.__ocean, self.__precipitation, self.__temperature = \
+        self.__land, self.__ocean, self.__biome = \
             get_values(World.__SHAPE, seed=seed)
-        self.__rgb = assign_rgb(self.__land, self.__ocean)
+
+        self.__rgb = assign_rgb(self.__land, self.__ocean, self.__biome)
 
     @property
     def rgb(self) -> array:

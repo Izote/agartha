@@ -13,10 +13,11 @@ if TYPE_CHECKING:
 def handle_events(context: Context) -> None:
     for e in event.wait():
         context.convert_event(e)
-        print(e)
         match e:
             case event.Quit():
                 raise SystemExit()
+            case event.MouseButtonDown():
+                print(e.tile)
 
 
 def render_content(*entities: Any, context: Context) -> None:
