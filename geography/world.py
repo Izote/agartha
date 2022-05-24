@@ -1,7 +1,5 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
-from matplotlib.pyplot import subplots, show
-from geography.generation import get_values
 from geography.biomes import assign_rgb
 
 if TYPE_CHECKING:
@@ -13,8 +11,7 @@ class World:
     __SHAPE = (80, 80)
 
     def __init__(self, seed: list = None) -> None:
-        self.__land, self.__ocean = get_values(World.__SHAPE, seed=seed)
-        self.__rgb = assign_rgb(self.__land, self.__ocean)
+        self.__rgb = assign_rgb(World.__SHAPE, seed=seed)
 
     @property
     def rgb(self) -> array:
@@ -27,8 +24,3 @@ class World:
     def render(self, console: Console) -> None:
         i, j = World.__SHAPE
         console.rgb[:i, :j] = self.__rgb
-
-    def show(self) -> None:
-        fig, ax = subplots()
-        img = ax.imshow(self.__rgb, origin="lower")
-        show()

@@ -50,4 +50,4 @@ def get_values(shape: tuple, seed: list = None, core: int = 54) -> tuple:
     l[l < 0] = "nan"
     l, o = [0.5*(x + 1) for x in [l, o]]
 
-    return l, o
+    return l, o, s[0]
