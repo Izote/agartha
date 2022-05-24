@@ -13,10 +13,8 @@ class World:
     __SHAPE = (80, 80)
 
     def __init__(self, seed: list = None) -> None:
-        self.__land, self.__ocean, self.__biome = \
-            get_values(World.__SHAPE, seed=seed)
-
-        self.__rgb = assign_rgb(self.__land, self.__ocean, self.__biome)
+        self.__land, self.__ocean = get_values(World.__SHAPE, seed=seed)
+        self.__rgb = assign_rgb(self.__land, self.__ocean)
 
     @property
     def rgb(self) -> array:
@@ -24,7 +22,7 @@ class World:
 
     @property
     def shape(self) -> tuple:
-        return self.__land.shape
+        return self.__rgb.shape
 
     def render(self, console: Console) -> None:
         i, j = World.__SHAPE
@@ -32,5 +30,5 @@ class World:
 
     def show(self) -> None:
         fig, ax = subplots()
-        img = ax.imshow(self.__land, origin="lower")
+        img = ax.imshow(self.__rgb, origin="lower")
         show()

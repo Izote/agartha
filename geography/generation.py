@@ -16,7 +16,7 @@ def get_noise(
         lacunarity: float = 2.5,
         hurst: float = 1.0,
         octaves: int = 16,
-        scale: float = 0.06
+        scale: float = 0.07
 ) -> list:
     noise = Noise(
         dimensions=2,
@@ -40,18 +40,14 @@ def get_falloff(core: int) -> array:
 
 
 def get_values(shape: tuple, seed: list = None, core: int = 54) -> tuple:
-    n = range(3)
+    n = range(2)
     s = [randint(1, 10000) for _ in n] if seed is None else seed
 
     # Default get_noise parameterization provides noise for land masses.
-    l, fo = get_noise(shape=shape, seed=s[0]), get_falloff(core=core)
-    l = l - fo
-    l[l < 0] = "nan"
-
-    # Leaving room for goal-specific parameterization.
+    l = get_noise(shape=shape, seed=s[0]) - get_falloff(core=core)
     o = get_noise(shape=shape, seed=s[1])
-    b = get_noise(shape=shape, seed=s[2])
 
+    l[l < 0] = "nan"
     l, o = [0.5*(x + 1) for x in [l, o]]
 
-    return l, o, b
+    return l, o
