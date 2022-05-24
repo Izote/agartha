@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 def get_noise(
         shape: tuple,
-        seed: list,
+        seed: int,
         algorithm: Algorithm = Algorithm.SIMPLEX,
         implementation: Implementation = Implementation.FBM,
         lacunarity: float = 2.5,
@@ -40,14 +40,15 @@ def get_falloff(core: int) -> array:
 
 
 def get_values(shape: tuple, seed: list = None, core: int = 54) -> tuple:
-    n = range(2)
+    n = range(3)
     s = [randint(1, 10000) for _ in n] if seed is None else seed
 
     # Default get_noise parameterization provides noise for land masses.
     l = get_noise(shape=shape, seed=s[0]) - get_falloff(core=core)
     o = get_noise(shape=shape, seed=s[1])
+    m = get_noise(shape=shape, octaves=2, scale=0.49, seed=s[2])
 
     l[l < 0] = "nan"
-    l, o = [0.5*(x + 1) for x in [l, o]]
+    l, o, m = [0.5*(x + 1) for x in [l, o, m]]
 
-    return l, o, s[0]
+    return l, o, m, s[0]

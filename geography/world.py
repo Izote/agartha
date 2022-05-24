@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
-from geography.biomes import assign_rgb
+from geography.biomes import generate_biomes
 
 if TYPE_CHECKING:
     from numpy import array
@@ -11,7 +11,7 @@ class World:
     __SHAPE = (80, 80)
 
     def __init__(self, seed: list = None) -> None:
-        self.__rgb = assign_rgb(World.__SHAPE, seed=seed)
+        self.__rgb = generate_biomes(World.__SHAPE, seed=seed)
 
     @property
     def rgb(self) -> array:
