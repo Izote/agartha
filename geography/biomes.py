@@ -11,7 +11,7 @@ def get_rgb(x: int, ch: str, biome: str) -> array:
     }
 
     bg = {
-        "savanna": (int(110*x + 30), int(130*x + 30), int(70*x + 30)),
+        "savanna": (int(110*x + 30), int(140*x + 30), int(70*x + 30)),
         "ocean": (int(20*x), int(40*x + 20), int(50*x + 100))
     }
 
