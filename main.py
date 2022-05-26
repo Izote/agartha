@@ -8,7 +8,7 @@ def main() -> None:
     with set_context() as context:
         while True:
             render_content(world, context=context)
-            handle_events(context=context)
+            handle_events(world, context=context)
 
 
 if __name__ == "__main__":

@@ -6,35 +6,37 @@ from geography.generation import get_values
 
 def get_rgb(x: int, ch: str, biome: str) -> array:
     fg = {
-        "savanna": (int(70*x), int(80*x), int(50*x)),
+        "grasslands": (int(40*x), int(50*x), int(20*x)),
+        "mountain": (int(220), int(250), int(250)),
         "ocean": (int(0), int(0), int(0))
     }
 
     bg = {
-        "savanna": (int(110*x + 30), int(140*x + 30), int(70*x + 30)),
+        "grasslands": (int(90*x + 30), int(120*x + 30), int(50*x + 30)),
+        "mountain": (int(90*x + 30), int(120*x + 30), int(50*x + 30)),
         "ocean": (int(20*x), int(40*x + 20), int(50*x + 100))
     }
 
     return array([(ord(ch), fg[biome], bg[biome])], dtype=rgb_graphic)
 
 
-def generate_biomes(shape: tuple, seed: list = None) -> array:
+def generate_biomes(shape: tuple, seed: list = None) -> tuple:
     l, o, m, s = get_values(shape=shape, seed=seed)
     rgb = empty(l.shape, dtype=rgb_graphic)
+    biome = empty(l.shape, dtype="U16")
     rng = default_rng(s)
 
     for i in range(l.shape[0]):
         for j in range(l.shape[1]):
             idx = i, j
             if isnan(l[idx]):
-                x = o[idx]
-                ch = " "
-                biome = "ocean"
+                x, ch, bio = o[idx], " ", "ocean"
             else:
                 x = l[idx]
                 ch = "^" if m[idx] > 0.88 else " "
-                biome = "savanna"
+                bio = "mountain" if m[idx] > 0.94 else "grasslands"
 
-            rgb[idx] = get_rgb(x, ch, biome)
+            biome[idx] = bio
+            rgb[idx] = get_rgb(x, ch, bio)
 
-    return rgb
+    return biome, rgb

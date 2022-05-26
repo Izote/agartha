@@ -8,16 +8,17 @@ from data import TILE_SHEET, WINDOW
 if TYPE_CHECKING:
     from typing import Any
     from tcod.context import Context
+    from geography.world import World
 
 
-def handle_events(context: Context) -> None:
+def handle_events(world: World, context: Context) -> None:
     for e in event.wait():
         context.convert_event(e)
         match e:
             case event.Quit():
                 raise SystemExit()
             case event.MouseButtonDown():
-                print(e.tile)
+                print(world.biome[e.tile.y, e.tile.x])
 
 
 def render_content(*entities: Any, context: Context) -> None:
