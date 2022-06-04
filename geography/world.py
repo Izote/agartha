@@ -11,12 +11,16 @@ class World:
     __SHAPE = (80, 80)
 
     def __init__(self, seed: list = None) -> None:
-        self.__biome, self.__rgb = \
+        self.__biome, self.__terrain, self.__rgb = \
             generate_biomes(World.__SHAPE, seed=seed)
 
     @property
     def biome(self) -> array:
         return self.__biome
+
+    @property
+    def terrain(self) -> array:
+        return self.__terrain
 
     @property
     def rgb(self) -> array:

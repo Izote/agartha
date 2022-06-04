@@ -18,7 +18,9 @@ def handle_events(world: World, context: Context) -> None:
             case event.Quit():
                 raise SystemExit()
             case event.MouseButtonDown():
-                print(world.biome[e.tile.y, e.tile.x])
+                i, j = e.tile.y, e.tile.x
+                biome, terrain = world.biome[i, j], world.terrain[i, j]
+                print(f"{biome} ({terrain})".replace(" (nan)", ""))
 
 
 def render_content(*entities: Any, context: Context) -> None:

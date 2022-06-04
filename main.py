@@ -3,7 +3,7 @@ from game.system import set_context, render_content, handle_events
 
 
 def main() -> None:
-    world = World([1, 1, 1])
+    world = World()
 
     with set_context() as context:
         while True:
