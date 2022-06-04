@@ -6,19 +6,17 @@ from geography.generation import get_values
 
 def get_rgb(x: int, ch: str, biome: str) -> array:
     fg = {
-        "desert": (int(0), int(0), int(0)),
-        "mountain": (int(60*x + 25), int(50*x + 25), int(25*x + 25)),
-        "plains": (int(40 * x), int(50 * x), int(20 * x)),
-        "ocean": (int(0), int(0), int(0)),
-        "river": (int(0), int(0), int(0))
+        "desert": (int(96*x + 16), int(88*x + 16), int(31*x + 8)),
+        "plains": (int(81*x + 16), int(73*x + 16), int(24*x + 8)),
+        "ocean": (10, int(8*x + 22), int(8*x + 72)),
+        "river": (10, int(8*x + 22), int(8*x + 72))
     }
 
     bg = {
-        "desert": (int(144*x + 50), int(128*x + 50), int(78*x + 50)),
-        "mountain": (int(119*x + 50), int(103*x + 50), int(53*x + 50)),
-        "plains": (int(90 * x + 30), int(120 * x + 30), int(50 * x + 30)),
-        "ocean": (int(20*x), int(40*x + 20), int(50*x + 100)),
-        "river": (int(20*x), int(40*x + 20), int(50*x + 100))
+        "desert": (int(100*x + 94), int(100*x + 78), int(85*x + 43)),
+        "plains": (int(90*x + 30), int(90*x + 52), int(60*x + 20)),
+        "ocean": (int(5*x + 15), int(15*x + 45), int(40*x + 102)),
+        "river": (int(5*x + 15), int(15*x + 45), int(40*x + 102))
     }
 
     return array([(ord(ch), fg[biome], bg[biome])], dtype=rgb_graphic)
