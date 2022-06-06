@@ -5,6 +5,16 @@ from geography.generation import get_values
 
 
 def get_rgb(x: int, ch: str, biome: str) -> array:
+    """
+    Compiles a tile for console rendering, assigning the tile's RGB color
+    value based on its biome label and noise value.
+
+    :param x: The tile's noise value.
+    :param ch: The tile's assigned character.
+    :param biome: The tile's assigned biome.
+    :return: An array of the tcod.console.rgb_graphic data type.
+    """
+
     fg = {
         "desert": (int(96*x + 16), int(88*x + 16), int(31*x + 8)),
         "plains": (int(81*x + 16), int(73*x + 16), int(24*x + 8)),
@@ -22,8 +32,21 @@ def get_rgb(x: int, ch: str, biome: str) -> array:
     return array([(ord(ch), fg[biome], bg[biome])], dtype=rgb_graphic)
 
 
-def generate_biomes(shape: tuple, seed: list = None) -> tuple:
+def generate_biomes(shape: tuple, seed: int = None) -> tuple:
+    """
+    Outputs several matrices representing the game's world map.
+
+    :param shape: The dimensions of the map itself.
+    :param seed: An integer to determine the noise generator's random state.
+    :return:
+    """
     def get_indexes(x: array) -> list:
+        """
+        Wrapper for common process of looping through an array's indexes.
+
+        :param x: The array to loop through.
+        :return: A list of tuples, one for each of the array's indexes.
+        """
         idx = []
         for i in range(x.shape[0]):
             for j in range(x.shape[1]):
@@ -32,6 +55,18 @@ def generate_biomes(shape: tuple, seed: list = None) -> tuple:
         return idx
 
     def get_adjacencies(idx: tuple, version: str, dist: int = 1) -> list:
+        """
+        Returns adjacent indexes, finding them based on the version and
+        dist parameter values.
+
+        Specific version details pending.
+
+        :param idx: The origin index.
+        :param version: One of "leeward", "riverhead", "flow" or "surrounding".
+        :param dist: How far to look for and compile adjacent indexes.
+        :return: A tuple of biome, terrain and RGB matrices.
+        """
+
         i, j = idx
         adjacencies = []
         if version == "leeward":
@@ -60,14 +95,25 @@ def generate_biomes(shape: tuple, seed: list = None) -> tuple:
 
         return adjacencies
 
-    def assign_land(mountain_threshold: float) -> None:
+    def assign_land(height_threshold: float) -> None:
+        """
+        Checks whether a given tile should be considered land versus ocean and
+        then assigns terrain features appropriately.
+
+        :param height_threshold: A [0, 1] value that assigns mountain terrain.
+        :return: None
+        """
+
         for idx in indexes:
-            if isnan(l[idx]):
-                rgb_val, terr, terr_chr, bio_lab = o[idx], "nan", " ", "ocean"
+            if isnan(land[idx]):
+                rgb_val = ocean[idx]
+                terr = "nan"
+                terr_chr = " "
+                bio_lab = "ocean"
             else:
-                rgb_val = l[idx]
-                terr = "mountain" if m[idx] > mountain_threshold else "nan"
-                terr_chr = "^" if m[idx] > mountain_threshold else " "
+                rgb_val = land[idx]
+                terr = "mountain" if height[idx] > height_threshold else "nan"
+                terr_chr = "^" if height[idx] > height_threshold else " "
                 bio_lab = "plains"
 
             biome[idx] = bio_lab
@@ -75,6 +121,12 @@ def generate_biomes(shape: tuple, seed: list = None) -> tuple:
             rgb[idx] = get_rgb(rgb_val, terr_chr, bio_lab)
 
     def desertify() -> None:
+        """
+        Converts plains tiles to desert tiles first based on their location
+        relative first to mountains and then to other, existing deserts.
+
+        :return: None
+        """
         settings = {
             "leeward": (terrain, "mountain", 3, 1),
             "surrounding": (biome, "desert", 1, 3)
@@ -85,8 +137,8 @@ def generate_biomes(shape: tuple, seed: list = None) -> tuple:
 
             for idx in indexes:
                 i, j = idx
-                if rng.integers(18, 22) <= i <= rng.integers(28, 32) or \
-                        rng.integers(58, 62) <= i <= rng.integers(68, 72):
+                if rng.integers(19, 22) <= i <= rng.integers(29, 32) or \
+                        rng.integers(59, 62) <= i <= rng.integers(69, 72):
                     count = 0
                     for adj in get_adjacencies(idx, version, dist):
                         try:
@@ -100,22 +152,21 @@ def generate_biomes(shape: tuple, seed: list = None) -> tuple:
                     if count >= threshold:
                         biome[idx] = "desert"
                         rgb_chr = chr(rgb[idx]["ch"])
-                        rgb[idx] = get_rgb(l[idx], rgb_chr, "desert")
+                        rgb[idx] = get_rgb(land[idx], rgb_chr, "desert")
                     else:
                         pass
                 else:
                     pass
 
-    l, o, m, s = get_values(shape=shape, seed=seed)
-    biome = empty(l.shape, dtype="U16")
-    terrain = empty(l.shape, dtype="U16")
-    rgb = empty(l.shape, dtype=rgb_graphic)
+    land, ocean, height = get_values(shape=shape, seed=seed)
+    biome = empty(land.shape, dtype="U16")
+    terrain = empty(land.shape, dtype="U16")
+    rgb = empty(land.shape, dtype=rgb_graphic)
 
-    rng = default_rng(s)
-    indexes = get_indexes(l)
+    rng = default_rng(seed)
+    indexes = get_indexes(land)
 
-    assign_land(mountain_threshold=0.90)
+    assign_land(height_threshold=0.90)
     desertify()
-    # irrigate((0.075, 0.925))
 
     return biome, terrain, rgb
